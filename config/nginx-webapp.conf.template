@@ -1,0 +1,51 @@
+# Web tier. Installed by scripts/bootstrap.sh, which substitutes the VPC range and the app directory.
+upstream webapp_backend {
+    server 127.0.0.1:8000;
+    keepalive 16;
+}
+
+server {
+    listen 80 default_server;
+    server_name _;
+
+    server_tokens off;
+    client_max_body_size 1m;
+
+    # Behind the load balancer the peer address is the ALB. Take the visitor's address from X-Forwarded-For,
+    # but only when the request really came from inside the VPC.
+    set_real_ip_from __VPC_CIDR__;
+    real_ip_header X-Forwarded-For;
+    real_ip_recursive on;
+
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "DENY" always;
+    add_header Referrer-Policy "same-origin" always;
+
+    # Static files come from the S3 bucket, synced onto the instance by bootstrap and by cron.
+    # Do not add add_header lines here: as soon as a location has one, Nginx stops inheriting
+    # the security headers set at server level. `expires` sets Cache-Control without that side effect.
+    location /static/ {
+        alias __APP_DIR__/static/;
+        expires 1h;
+        access_log off;
+    }
+
+    # Used by scripts/healthcheck.sh: proves Nginx itself is answering, whatever the app is doing.
+    location = /nginx-health {
+        access_log off;
+        default_type text/plain;
+        return 200 "ok\n";
+    }
+
+    location / {
+        proxy_pass http://webapp_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 30s;
+    }
+}

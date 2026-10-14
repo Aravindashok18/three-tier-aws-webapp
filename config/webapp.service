@@ -1,0 +1,28 @@
+[Unit]
+Description=Notes web app (gunicorn)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=webapp
+Group=webapp
+WorkingDirectory=/opt/webapp/current
+EnvironmentFile=/etc/webapp/env
+# Create the tables first; waits while the database is still starting.
+ExecStartPre=/opt/webapp/venv/bin/python -m app.initdb
+ExecStart=/opt/webapp/venv/bin/gunicorn --workers 2 --threads 4 --bind 127.0.0.1:8000 --timeout 30 --access-logfile - app.wsgi:app
+Restart=on-failure
+RestartSec=3
+TimeoutStartSec=180
+
+# The app writes nothing to disk, so close off everything it does not need.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target

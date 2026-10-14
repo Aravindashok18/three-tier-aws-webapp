@@ -1,0 +1,10 @@
+# Installed as /etc/fail2ban/jail.d/00-webapp.local by scripts/harden.sh, which substitutes the VPC range below.
+[DEFAULT]
+bantime  = 1h
+findtime = 10m
+maxretry = 4
+backend  = systemd
+ignoreip = 127.0.0.1/8 ::1 __VPC_CIDR__
+
+[sshd]
+enabled = true

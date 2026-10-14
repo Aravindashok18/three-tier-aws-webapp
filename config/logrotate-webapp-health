@@ -1,0 +1,7 @@
+/var/log/webapp-health.log {
+    weekly
+    rotate 4
+    compress
+    missingok
+    notifempty
+}
