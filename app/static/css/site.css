@@ -1,0 +1,25 @@
+:root {
+  --bg: #f6f7f9; --card: #fff; --text: #1d2330; --muted: #667085; --line: #e3e6ec;
+  --accent: #2557d6; --danger: #b42318;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #11151c; --card: #1a2029; --text: #e8ebf0; --muted: #98a2b3; --line: #2b3340; --accent: #7aa2ff; --danger: #ff8a80; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 system-ui, sans-serif; }
+.top, main { max-width: 640px; margin: 0 auto; padding: 0 16px; }
+.top { padding-top: 32px; }
+h1 { margin: 0; font-size: 1.6rem; }
+.muted { color: var(--muted); margin: 4px 0 24px; }
+code { background: var(--card); border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; }
+form, li { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+form { display: grid; gap: 12px; margin-bottom: 24px; }
+label { display: grid; gap: 4px; font-size: .9rem; color: var(--muted); }
+input, textarea { font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+button { font: inherit; border: 0; border-radius: 6px; padding: 8px 14px; background: var(--accent); color: #fff; cursor: pointer; justify-self: start; }
+button.delete { background: transparent; color: var(--danger); padding: 2px 6px; }
+ul { list-style: none; margin: 0; padding: 0 0 48px; display: grid; gap: 12px; }
+li p { margin: 0 0 8px; white-space: pre-wrap; overflow-wrap: anywhere; }
+li footer { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: .85rem; }
+li.empty { text-align: center; color: var(--muted); }
+.error { color: var(--danger); margin: 0; }

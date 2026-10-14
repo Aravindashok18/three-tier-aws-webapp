@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Notes</title>
+  <link rel="stylesheet" href="{{ static_base }}/css/site.css">
+</head>
+<body>
+  <header class="top">
+    <h1>Team Notes</h1>
+    <p class="muted">Served by <code id="host">{{ host }}</code></p>
+  </header>
+
+  <main>
+    <form id="note-form" autocomplete="off">
+      <label>Name <input name="author" maxlength="60" required></label>
+      <label>Note <textarea name="body" maxlength="500" rows="3" required></textarea></label>
+      <button type="submit">Post note</button>
+      <p id="form-error" class="error" role="alert" hidden></p>
+    </form>
+
+    <ul id="notes">
+      {% for note in notes %}
+      <li data-id="{{ note.id }}">
+        <p>{{ note.body }}</p>
+        <footer>
+          <span>{{ note.author }} &middot; {{ note.created_at }}</span>
+          <button class="delete" type="button" aria-label="Delete note">Delete</button>
+        </footer>
+      </li>
+      {% else %}
+      <li class="empty">No notes yet.</li>
+      {% endfor %}
+    </ul>
+  </main>
+
+  <script src="{{ static_base }}/js/app.js" defer></script>
+</body>
+</html>
